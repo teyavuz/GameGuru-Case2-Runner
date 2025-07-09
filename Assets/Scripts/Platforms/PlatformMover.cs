@@ -53,8 +53,9 @@ public class PlatformMover : MonoBehaviour
     private void Stop()
     {
         if (isPlaced) return;
-
+        
         //TO-DO: Stop işlemleri yapılacak
+        speed = 0f;
 
         GameManager.Instance.LastCubeTransform = transform;
         PlatformSpawner.Instance.SpawnNextPlatform();
