@@ -1,0 +1,65 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlatformMover : MonoBehaviour
+{
+    [SerializeField] private float speed = 2f;
+    [SerializeField] private float perfectThreshold = 0.03f;
+    public float minX = -1.5f;
+    public float maxX = 1.5f;
+
+    private int direction = 1; // 1 sağa, -1 sola
+
+    private bool isPlaced;
+
+    private void OnEnable()
+    {
+        isPlaced = false;
+    }
+
+    private void Update()
+    {
+
+        if (speed > 0f && !isPlaced)
+        {
+            Move();
+        }
+
+        if (Input.GetMouseButtonDown(0) && !isPlaced)
+        {
+            Stop();
+        }
+    }
+
+
+    private void Move()
+    {
+        transform.position += Vector3.right * direction * speed * Time.deltaTime;
+
+        if (transform.position.x >= maxX)
+        {
+            direction = -1;
+            transform.position = new Vector3(maxX, transform.position.y, transform.position.z);
+        }
+        else if (transform.position.x <= minX)
+        {
+            direction = 1;
+            transform.position = new Vector3(minX, transform.position.y, transform.position.z);
+        }
+    }
+
+    private void Stop()
+    {
+        if (isPlaced) return;
+
+        //TO-DO: Stop işlemleri yapılacak
+
+        GameManager.Instance.LastCubeTransform = transform;
+        PlatformSpawner.Instance.SpawnNextPlatform();
+    }
+
+
+
+}
