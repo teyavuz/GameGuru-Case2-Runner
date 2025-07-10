@@ -53,14 +53,72 @@ public class PlatformMover : MonoBehaviour
     private void Stop()
     {
         if (isPlaced) return;
-        
-        //TO-DO: Stop işlemleri yapılacak
+
+        Transform previous = GameManager.Instance.LastCubeTransform;
+        float hangOver = transform.position.x - previous.position.x;
+        float absHangOver = Mathf.Abs(hangOver);
+        float maxSize = previous.localScale.x;
+
+        // Lose sistemi
+        if (absHangOver >= maxSize)
+        {
+            gameObject.AddComponent<Rigidbody>();
+            Destroy(gameObject, 2f);
+            GameManager.Instance.GameOver();
+            return;
+        }
+
+        isPlaced = true;
         speed = 0f;
+
+
+
+        if (absHangOver < perfectThreshold)
+        {
+            Vector3 snappedPosition = new Vector3(
+                previous.position.x,
+                transform.position.y,
+                transform.position.z
+            );
+            transform.position = snappedPosition;
+
+            // TODO: Ses ve perfect serisi burada yap. Ses için notayı kod tarafında
+            // inceltebiliyo muyuz araştır yarın
+        }
+        else
+        {
+            CutPlatform(hangOver, previous);
+        }
 
         GameManager.Instance.LastCubeTransform = transform;
         PlatformSpawner.Instance.SpawnNextPlatform();
     }
 
 
+
+    private void CutPlatform(float hangOver, Transform previous)
+    {
+        float direction = hangOver > 0 ? 1f : -1f;
+        float absHangOver = Mathf.Abs(hangOver);
+        float newSize = previous.localScale.x - absHangOver;
+
+        float newX = previous.position.x + (transform.position.x - previous.position.x) / 2f;
+
+        transform.localScale = new Vector3(newSize, transform.localScale.y, transform.localScale.z);
+
+
+        transform.position = new Vector3(newX, transform.position.y, transform.position.z);
+
+        // Taşan kısmı oluşturma işlemi
+        float fallSize = absHangOver;
+        float fallX = transform.position.x + (newSize / 2f + fallSize / 2f) * direction;
+
+        GameObject fallingBlock = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        fallingBlock.transform.localScale = new Vector3(fallSize, transform.localScale.y, transform.localScale.z);
+        fallingBlock.transform.position = new Vector3(fallX, transform.position.y, transform.position.z);
+
+        fallingBlock.AddComponent<Rigidbody>();
+        Destroy(fallingBlock, 2f);
+    }
 
 }
