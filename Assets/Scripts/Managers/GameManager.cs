@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
     [Min(1)] public int maxPlatformCount;
     public Transform LastCubeTransform;
 
+    public CharacterController Player;
+
     void Awake()
     {
         Instance = this;
