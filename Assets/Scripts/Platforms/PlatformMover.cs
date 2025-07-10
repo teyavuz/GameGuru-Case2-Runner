@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlatformMover : MonoBehaviour
@@ -11,7 +8,6 @@ public class PlatformMover : MonoBehaviour
     public float maxX = 1.5f;
 
     private int direction = 1; // 1 sağa, -1 sola
-
     private bool isPlaced;
 
     private void OnEnable()
@@ -21,18 +17,12 @@ public class PlatformMover : MonoBehaviour
 
     private void Update()
     {
-
         if (speed > 0f && !isPlaced)
-        {
             Move();
-        }
 
         if (Input.GetMouseButtonDown(0) && !isPlaced)
-        {
             Stop();
-        }
     }
-
 
     private void Move()
     {
@@ -71,8 +61,6 @@ public class PlatformMover : MonoBehaviour
         isPlaced = true;
         speed = 0f;
 
-
-
         if (absHangOver < perfectThreshold)
         {
             Vector3 snappedPosition = new Vector3(
@@ -90,34 +78,30 @@ public class PlatformMover : MonoBehaviour
             CutPlatform(hangOver, previous);
         }
 
-
-
         GameManager.Instance.LastCubeTransform = transform;
 
-        CharacterController player = GameManager.Instance.Player;
-
+        var player = GameManager.Instance.Player;
         Vector3 platformCenter = new Vector3(transform.position.x, player.transform.position.y, transform.position.z);
 
-        //On Complete calbacki
-        player.MoveTo(platformCenter, () =>
-        {
-            PlatformSpawner.Instance.SpawnNextPlatform();
-        });
+        player.OnReachedTarget += HandlePlatformArrival;
+        player.MoveTo(platformCenter);
     }
 
+    private void HandlePlatformArrival()
+    {
+        PlatformSpawner.Instance.SpawnNextPlatform();
 
+        GameManager.Instance.Player.OnReachedTarget -= HandlePlatformArrival;
+    }
 
     private void CutPlatform(float hangOver, Transform previous)
     {
         float direction = hangOver > 0 ? 1f : -1f;
         float absHangOver = Mathf.Abs(hangOver);
         float newSize = previous.localScale.x - absHangOver;
-
         float newX = previous.position.x + (transform.position.x - previous.position.x) / 2f;
 
         transform.localScale = new Vector3(newSize, transform.localScale.y, transform.localScale.z);
-
-
         transform.position = new Vector3(newX, transform.position.y, transform.position.z);
 
         // Taşan kısmı oluşturma işlemi
@@ -127,9 +111,7 @@ public class PlatformMover : MonoBehaviour
         GameObject fallingBlock = GameObject.CreatePrimitive(PrimitiveType.Cube);
         fallingBlock.transform.localScale = new Vector3(fallSize, transform.localScale.y, transform.localScale.z);
         fallingBlock.transform.position = new Vector3(fallX, transform.position.y, transform.position.z);
-
         fallingBlock.AddComponent<Rigidbody>();
         Destroy(fallingBlock, 2f);
     }
-
 }

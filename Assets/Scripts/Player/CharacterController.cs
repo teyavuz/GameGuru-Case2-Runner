@@ -8,6 +8,9 @@ public class CharacterController : MonoBehaviour
     [SerializeField] private float moveSpeed = 2f;
 
     private Animator animator;
+    private Coroutine moveCoroutine;
+
+    public event Action OnReachedTarget;
 
     private void Awake()
     {
@@ -15,17 +18,15 @@ public class CharacterController : MonoBehaviour
         animator.speed = 0f;
     }
 
-    private Coroutine moveCoroutine;
-
-    public void MoveTo(Vector3 targetPosition, Action onComplete = null)
+    public void MoveTo(Vector3 targetPosition)
     {
         if (moveCoroutine != null)
             StopCoroutine(moveCoroutine);
 
-        moveCoroutine = StartCoroutine(MoveRoutine(targetPosition, onComplete));
+        moveCoroutine = StartCoroutine(MoveRoutine(targetPosition));
     }
 
-    private IEnumerator MoveRoutine(Vector3 target, Action onComplete)
+    private IEnumerator MoveRoutine(Vector3 target)
     {
         animator.speed = 1f;
 
@@ -36,11 +37,9 @@ public class CharacterController : MonoBehaviour
         }
 
         transform.position = target;
-
         animator.speed = 0f;
 
-        onComplete?.Invoke();
-
+        OnReachedTarget?.Invoke();
         moveCoroutine = null;
     }
 

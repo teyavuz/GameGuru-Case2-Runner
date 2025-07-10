@@ -3609,7 +3609,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GameState: 0
-  maxPlatformCount: 6
+  maxPlatformCount: 3
   LastCubeTransform: {fileID: 2031669749}
   Player: {fileID: 5551014133744016556}
 --- !u!4 &1143561104
