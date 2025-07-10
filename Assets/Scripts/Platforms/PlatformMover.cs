@@ -90,13 +90,19 @@ public class PlatformMover : MonoBehaviour
             CutPlatform(hangOver, previous);
         }
 
+
+
         GameManager.Instance.LastCubeTransform = transform;
-        GameObject player = GameObject.FindWithTag("Player");
-        if (player != null)
+
+        CharacterController player = GameManager.Instance.Player;
+
+        Vector3 platformCenter = new Vector3(transform.position.x, player.transform.position.y, transform.position.z);
+
+        //On Complete calbacki
+        player.MoveTo(platformCenter, () =>
         {
-            player.GetComponent<CharacterController>().MoveTo(transform);
-        }
-        PlatformSpawner.Instance.SpawnNextPlatform();
+            PlatformSpawner.Instance.SpawnNextPlatform();
+        });
     }
 
 

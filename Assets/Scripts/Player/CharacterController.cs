@@ -1,31 +1,52 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
 public class CharacterController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 2f;
-    private Vector3 targetPosition;
-    private bool isMoving = false;
 
-    private void Update()
+    private Animator animator;
+
+    private void Awake()
     {
-        if (!isMoving) return;
-
-        transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
-
-        if (Vector3.Distance(transform.position, targetPosition) < 0.01f)
-        {
-            isMoving = false;
-            GameManager.Instance.GameState = GameState.Playing; // Oyuncu yerine ulaştı
-        }
+        animator = GetComponent<Animator>();
+        animator.speed = 0f;
     }
 
-    public void MoveTo(Transform platform)
+    private Coroutine moveCoroutine;
+
+    public void MoveTo(Vector3 targetPosition, Action onComplete = null)
     {
-        Vector3 newPos = new Vector3(platform.position.x, transform.position.y, platform.position.z);
-        targetPosition = newPos;
-        isMoving = true;
+        if (moveCoroutine != null)
+            StopCoroutine(moveCoroutine);
+
+        moveCoroutine = StartCoroutine(MoveRoutine(targetPosition, onComplete));
+    }
+
+    private IEnumerator MoveRoutine(Vector3 target, Action onComplete)
+    {
+        animator.speed = 1f;
+
+        while (Vector3.Distance(transform.position, target) > 0.01f)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        transform.position = target;
+
+        animator.speed = 0f;
+
+        onComplete?.Invoke();
+
+        moveCoroutine = null;
+    }
+
+    public void PlayVictoryAnimation()
+    {
+        animator.speed = 1f;
+        animator.Play("Win");
     }
 }
