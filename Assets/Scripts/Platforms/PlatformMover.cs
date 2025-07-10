@@ -91,6 +91,11 @@ public class PlatformMover : MonoBehaviour
         }
 
         GameManager.Instance.LastCubeTransform = transform;
+        GameObject player = GameObject.FindWithTag("Player");
+        if (player != null)
+        {
+            player.GetComponent<CharacterController>().MoveTo(transform);
+        }
         PlatformSpawner.Instance.SpawnNextPlatform();
     }
 
