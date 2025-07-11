@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
     public Transform LastCubeTransform;
 
     public CharacterController Player;
+    public Transform FinishingPlatform;
+
 
     void Awake()
     {

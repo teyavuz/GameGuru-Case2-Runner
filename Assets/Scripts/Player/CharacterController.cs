@@ -46,6 +46,6 @@ public class CharacterController : MonoBehaviour
     public void PlayVictoryAnimation()
     {
         animator.speed = 1f;
-        animator.Play("Win");
+        animator.Play("dance");
     }
 }

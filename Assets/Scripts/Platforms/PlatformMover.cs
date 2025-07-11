@@ -89,9 +89,16 @@ public class PlatformMover : MonoBehaviour
 
     private void HandlePlatformArrival()
     {
-        PlatformSpawner.Instance.SpawnNextPlatform();
-
         GameManager.Instance.Player.OnReachedTarget -= HandlePlatformArrival;
+
+        if (PlatformSpawner.Instance.platformCount == GameManager.Instance.maxPlatformCount)
+        {
+            MoveToFinishPlatform();
+        }
+        else
+        {
+            PlatformSpawner.Instance.SpawnNextPlatform();
+        }
     }
 
     private void CutPlatform(float hangOver, Transform previous)
@@ -113,5 +120,25 @@ public class PlatformMover : MonoBehaviour
         fallingBlock.transform.position = new Vector3(fallX, transform.position.y, transform.position.z);
         fallingBlock.AddComponent<Rigidbody>();
         Destroy(fallingBlock, 2f);
+    }
+
+    private void MoveToFinishPlatform()
+    {
+        var player = GameManager.Instance.Player;
+        var finishPos = GameManager.Instance.FinishingPlatform.position;
+        var target = new Vector3(finishPos.x, player.transform.position.y, finishPos.z);
+
+        player.OnReachedTarget += HandleVictory; // Event'i dinle
+        player.MoveTo(target);
+    }
+
+    private void HandleVictory()
+    {
+        GameManager.Instance.Player.OnReachedTarget -= HandleVictory;
+
+        GameManager.Instance.Player.PlayVictoryAnimation();
+        GameManager.Instance.GameState = GameState.Win;
+
+        Debug.Log("YOU WIN!");
     }
 }

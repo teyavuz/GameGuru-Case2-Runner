@@ -31,8 +31,11 @@ public class PlatformSpawner : MonoBehaviour
     {
         int platformCount = GameManager.Instance.maxPlatformCount;
 
-        Instantiate(finishingPlatformPrefab, new Vector3(0f,
-        -0.2f, LastPlatformTransform.position.z + 3f * platformCount), Quaternion.identity);
+        GameObject finishPlatform = Instantiate(finishingPlatformPrefab,
+            new Vector3(0f, -0.2f, LastPlatformTransform.position.z + 3f * platformCount),
+            Quaternion.identity);
+
+        GameManager.Instance.FinishingPlatform = finishPlatform.transform;
     }
 
     private void SpawnFirstPlatform()
