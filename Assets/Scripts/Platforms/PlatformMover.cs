@@ -4,8 +4,8 @@ public class PlatformMover : MonoBehaviour
 {
     [SerializeField] private float speed = 2f;
     [SerializeField] private float perfectThreshold = 0.03f;
-    public float minX = -1.5f;
-    public float maxX = 1.5f;
+    [SerializeField] private float minX = -1.5f;
+    [SerializeField] private float maxX = 1.5f;
 
     private int direction = 1; // 1 sağa, -1 sola
     private bool isPlaced;
@@ -63,18 +63,17 @@ public class PlatformMover : MonoBehaviour
 
         if (absHangOver < perfectThreshold)
         {
-            Vector3 snappedPosition = new Vector3(
+            transform.position = new Vector3(
                 previous.position.x,
                 transform.position.y,
                 transform.position.z
             );
-            transform.position = snappedPosition;
 
-            // TODO: Ses ve perfect serisi burada yap. Ses için notayı kod tarafında
-            // inceltebiliyo muyuz araştır yarın
+            AudioManager.Instance.PlayPerfectNote();
         }
         else
         {
+            AudioManager.Instance.ResetPerfectPitch();
             CutPlatform(hangOver, previous);
         }
 
@@ -128,7 +127,7 @@ public class PlatformMover : MonoBehaviour
         var finishPos = GameManager.Instance.FinishingPlatform.position;
         var target = new Vector3(finishPos.x, player.transform.position.y, finishPos.z);
 
-        player.OnReachedTarget += HandleVictory; // Event'i dinle
+        player.OnReachedTarget += HandleVictory;
         player.MoveTo(target);
     }
 
@@ -136,9 +135,6 @@ public class PlatformMover : MonoBehaviour
     {
         GameManager.Instance.Player.OnReachedTarget -= HandleVictory;
 
-        GameManager.Instance.Player.PlayVictoryAnimation();
-        GameManager.Instance.GameState = GameState.Win;
-
-        Debug.Log("YOU WIN!");
+        GameManager.Instance.TriggerWin();
     }
 }

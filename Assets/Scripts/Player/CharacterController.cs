@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(Animator))]
 public class CharacterController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 2f;
@@ -14,7 +13,7 @@ public class CharacterController : MonoBehaviour
 
     private void Awake()
     {
-        animator = GetComponent<Animator>();
+        animator = GetComponentInChildren<Animator>();
         animator.speed = 0f;
     }
 

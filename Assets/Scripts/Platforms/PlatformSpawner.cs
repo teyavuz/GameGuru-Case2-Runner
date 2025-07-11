@@ -60,7 +60,6 @@ public class PlatformSpawner : MonoBehaviour
 
         newPlatform.GetComponent<Renderer>().material = platformMaterials[Random.Range(0, platformMaterials.Length)];
 
-        // TO-DO: Yarın platform boyutunu ayarla unutma!
         if (platformCount > 1)
         {
             float previousScaleX = GameManager.Instance.LastCubeTransform.localScale.x;
