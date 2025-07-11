@@ -44,6 +44,9 @@ public class PlatformSpawner : MonoBehaviour
         firstPlatform.GetComponent<Renderer>().material = platformMaterials[Random.Range(0, platformMaterials.Length)];
         LastPlatformTransform = firstPlatform.transform;
         platformCount++;
+
+        PlatformMover mover = firstPlatform.GetComponent<PlatformMover>();
+        mover.enabled = false;
     }
 
     public void SpawnNextPlatform()

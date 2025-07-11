@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     public Transform FinishingPlatform;
 
     [Header("UI")]
+    [SerializeField] private GameObject pressToStartUI;
     [SerializeField] private GameObject gameOverUI;
     [SerializeField] private GameObject winUI;
 
@@ -27,14 +28,33 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        GameState = GameState.Ready;
     }
 
     private void Start()
     {
+        pressToStartUI.SetActive(true);
         gameOverUI.SetActive(false);
         winUI.SetActive(false);
+        GameState = GameState.Ready;
+    }
+
+    private void Update()
+    {
+        if (GameState == GameState.Ready && Input.GetMouseButtonDown(0))
+        {
+            StartGame();
+        }
+    }
+
+    private void StartGame()
+    {
         GameState = GameState.Playing;
+        pressToStartUI.SetActive(false);
+        Debug.Log("Game Started!");
+
+        var firstPlatform = PlatformSpawner.Instance.LastPlatformTransform;
+        PlatformMover mover = firstPlatform.GetComponent<PlatformMover>();
+        if (mover != null) mover.enabled = true;
     }
 
     public void GameOver()
@@ -42,7 +62,7 @@ public class GameManager : MonoBehaviour
         GameState = GameState.GameOver;
         AudioManager.Instance.ResetPerfectPitch();
         Debug.Log("Game Over");
-        StartCoroutine(WaitASecondAndLoadScene(5f));
+        StartCoroutine(WaitASecondAndLoadScene(5f, gameOverUI));
     }
 
     public void TriggerWin()
@@ -59,8 +79,8 @@ public class GameManager : MonoBehaviour
         AudioManager.Instance.ResetPerfectPitch();
         Debug.Log("You Win!");
 
-        
-        StartCoroutine(WaitASecondAndLoadScene(7f));
+
+        StartCoroutine(WaitASecondAndLoadScene(7f, winUI));
     }
 
     private IEnumerator RotateCameraAroundPlayer()
@@ -75,11 +95,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private IEnumerator WaitASecondAndLoadScene(float seconds)
+    private IEnumerator WaitASecondAndLoadScene(float seconds, GameObject UI)
     {
         AudioManager.Instance.PlayGameOverMusic();
         yield return new WaitForSeconds(3f);
-        gameOverUI.SetActive(true);
+        UI.SetActive(true);
         yield return new WaitForSeconds(seconds);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }

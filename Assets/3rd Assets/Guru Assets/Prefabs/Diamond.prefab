@@ -97,7 +97,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7af909651e8018946a2e903465f3c6af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collectEffect: {fileID: 19861264, guid: 4e110ae3c6c4a44438488f03e233bfe1, type: 3}
+  collectEffect: {fileID: 19855088, guid: cc4edba986607ba48b17927b27d25e4e, type: 3}
   collectSound: {fileID: 8300000, guid: a781d97ec93556f48ab3648e9b4849ca, type: 3}
   destroyDelay: 0.5
 --- !u!135 &9065197120636852149

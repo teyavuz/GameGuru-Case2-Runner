@@ -24,6 +24,7 @@ public class PlatformMover : MonoBehaviour
             Stop();
     }
 
+
     private void Move()
     {
         transform.position += Vector3.right * direction * speed * Time.deltaTime;
