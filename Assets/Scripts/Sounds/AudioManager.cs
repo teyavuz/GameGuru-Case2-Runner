@@ -68,4 +68,12 @@ public class AudioManager : MonoBehaviour
         musicSource.loop = false;
         musicSource.Play();
     }
+
+    public void CollectibleCollected(AudioClip collectSound)
+    {
+        if (collectSound != null)
+        {
+            AudioSource.PlayClipAtPoint(collectSound, Camera.main.transform.position);
+        }
+    }
 }

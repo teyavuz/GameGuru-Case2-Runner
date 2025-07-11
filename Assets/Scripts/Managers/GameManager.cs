@@ -59,6 +59,8 @@ public class GameManager : MonoBehaviour
         AudioManager.Instance.ResetPerfectPitch();
         Debug.Log("You Win!");
 
+        
+        StartCoroutine(WaitASecondAndLoadScene(7f));
     }
 
     private IEnumerator RotateCameraAroundPlayer()

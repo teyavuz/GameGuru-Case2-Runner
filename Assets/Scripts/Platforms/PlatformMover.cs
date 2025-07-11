@@ -61,7 +61,7 @@ public class PlatformMover : MonoBehaviour
         isPlaced = true;
         speed = 0f;
 
-        if (absHangOver < perfectThreshold)
+        if (absHangOver < perfectThreshold && PlatformSpawner.Instance.platformCount > 1)
         {
             transform.position = new Vector3(
                 previous.position.x,
