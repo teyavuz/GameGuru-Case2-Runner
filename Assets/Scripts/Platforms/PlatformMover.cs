@@ -62,7 +62,13 @@ public class PlatformMover : MonoBehaviour
         isPlaced = true;
         speed = 0f;
 
-        if (absHangOver < perfectThreshold && PlatformSpawner.Instance.platformCount > 1)
+        
+        //Debug.Log($"Platform Count: {PlatformSpawner.Instance.platformCount}, Perfect Threshold: {absHangOver < perfectThreshold}");
+        
+        // İlk platformun countunu verdim burda
+        bool isFirstMovablePlatform = (PlatformSpawner.Instance.platformCount == 1);
+        
+        if (absHangOver < perfectThreshold && !isFirstMovablePlatform)
         {
             transform.position = new Vector3(
                 previous.position.x,
@@ -72,10 +78,14 @@ public class PlatformMover : MonoBehaviour
 
             AudioManager.Instance.PlayPerfectNote();
         }
-        else
+        else if (!isFirstMovablePlatform) // Eğer ilk platform değilse taşan parçayı kesiyo.
         {
             AudioManager.Instance.ResetPerfectPitch();
             CutPlatform(hangOver, previous);
+        }
+        else // İlk platform ise hiçbir şey yapmıyor.
+        {
+            AudioManager.Instance.ResetPerfectPitch();
         }
 
         GameManager.Instance.LastCubeTransform = transform;
