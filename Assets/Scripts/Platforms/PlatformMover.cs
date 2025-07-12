@@ -24,7 +24,9 @@ public class PlatformMover : MonoBehaviour
             Stop();
     }
 
-
+    /// <summary>
+    /// Platformu belirlenen sınırlar içerisinde sağa sola hareket ettiren kod.
+    /// </summary>
     private void Move()
     {
         transform.position += Vector3.right * direction * speed * Time.deltaTime;
@@ -41,6 +43,10 @@ public class PlatformMover : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Platformu durdurur, hizalama kontrolünü yapıp ya perfect snap yada lose tetikler.
+    /// Lose yoksa playerı yeni platforma koşturur.
+    /// </summary>
     private void Stop()
     {
         if (isPlaced) return;
@@ -50,7 +56,7 @@ public class PlatformMover : MonoBehaviour
         float absHangOver = Mathf.Abs(hangOver);
         float maxSize = previous.localScale.x;
 
-        // Lose sistemi
+        // Lose sistemi. parçaya fizik ekleyip gameover'ı çalıştırır.
         if (absHangOver >= maxSize)
         {
             gameObject.AddComponent<Rigidbody>();
@@ -97,6 +103,9 @@ public class PlatformMover : MonoBehaviour
         player.MoveTo(platformCenter);
     }
 
+    /// <summary>
+    /// Oyuncu platformun merkezine ulaştığında çalışır, yeni platform oluşturur veya bitiş platformuna yönlendirir
+    /// </summary>
     private void HandlePlatformArrival()
     {
         GameManager.Instance.Player.OnReachedTarget -= HandlePlatformArrival;
@@ -111,6 +120,9 @@ public class PlatformMover : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Platformdan taşan kısmı keser ve düşen blok oluşturur
+    /// </summary>
     private void CutPlatform(float hangOver, Transform previous)
     {
         float direction = hangOver > 0 ? 1f : -1f;
@@ -121,7 +133,7 @@ public class PlatformMover : MonoBehaviour
         transform.localScale = new Vector3(newSize, transform.localScale.y, transform.localScale.z);
         transform.position = new Vector3(newX, transform.position.y, transform.position.z);
 
-        // Taşan kısmı oluşturma işlemi
+        // Taşan kısmı hesaplayıp oluşturma işlemi
         float fallSize = absHangOver;
         float fallX = transform.position.x + (newSize / 2f + fallSize / 2f) * direction;
 
@@ -132,6 +144,9 @@ public class PlatformMover : MonoBehaviour
         Destroy(fallingBlock, 2f);
     }
 
+    /// <summary>
+    /// Oyuncuyu bitiş platformuna koşturur
+    /// </summary>
     private void MoveToFinishPlatform()
     {
         var player = GameManager.Instance.Player;
@@ -142,6 +157,9 @@ public class PlatformMover : MonoBehaviour
         player.MoveTo(target);
     }
 
+    /// <summary>
+    /// Oyuncu bitiş platformuna ulaştığında dansı başlatır.
+    /// </summary>
     private void HandleVictory()
     {
         GameManager.Instance.Player.OnReachedTarget -= HandleVictory;

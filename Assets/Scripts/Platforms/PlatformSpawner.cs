@@ -20,6 +20,9 @@ public class PlatformSpawner : MonoBehaviour
         Instance = this;
     }
 
+    /// <summary>
+    /// İlk platform ile bitiş platformunu oluşturur
+    /// </summary>
     private void Start()
     {
         platformCount = 0;
@@ -27,6 +30,9 @@ public class PlatformSpawner : MonoBehaviour
         PlaceFinishingPlatform();
     }
 
+    /// <summary>
+    /// Bitiş platformunu yerleştirir
+    /// </summary>
     private void PlaceFinishingPlatform()
     {
         int platformCount = GameManager.Instance.maxPlatformCount;
@@ -38,6 +44,9 @@ public class PlatformSpawner : MonoBehaviour
         GameManager.Instance.FinishingPlatform = finishPlatform.transform;
     }
 
+    /// <summary>
+    /// İlk platformu sabit konumda oluşturur GameState Ready diye hareketini kapatır.
+    /// </summary>
     private void SpawnFirstPlatform()
     {
         GameObject firstPlatform = Instantiate(platformPrefab, new Vector3(-4.8f, -0.2f, 2.4f), Quaternion.identity);
@@ -49,6 +58,9 @@ public class PlatformSpawner : MonoBehaviour
         mover.enabled = false;
     }
 
+    /// <summary>
+    /// Yeni platformu önceki platformun konumuna göre oluşturur ve rastgele materyal atar
+    /// </summary>
     public void SpawnNextPlatform()
     {
         if (platformCount >= GameManager.Instance.maxPlatformCount)
